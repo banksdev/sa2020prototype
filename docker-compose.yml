@@ -22,5 +22,5 @@ services:
         networks:
             - sa2020http
 
-network:
+networks:
     sa2020http:

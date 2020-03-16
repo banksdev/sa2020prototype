@@ -38,9 +38,9 @@ namespace API.Controllers
 
         // POST: api/File
         [HttpPost]
-        public IActionResult Post([FromBody] string filetext)
+        public IActionResult Post([FromBody] ContentWrapper filetext)
         {
-            var textbytes = Encoding.ASCII.GetBytes(filetext);
+            var textbytes = Encoding.ASCII.GetBytes(filetext.Content);
             var request = WebRequest.Create($"https://file_service/api/files");
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
@@ -64,6 +64,11 @@ namespace API.Controllers
             response.Close();
 
             return Ok(responseFromServer);
+        }
+
+        public class ContentWrapper
+        {
+            public string Content { get; set; }
         }
     }
 }
