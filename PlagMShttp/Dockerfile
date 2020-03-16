@@ -7,14 +7,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY . PlagMShttp/
-RUN dotnet restore "PlagMShttp/PlagMShttp.csproj"
 COPY . .
-WORKDIR "/src/PlagMShttp"
-RUN dotnet build "PlagMShttp.csproj" -c Release -o /app/build
+
+RUN dotnet restore "PlagMShttp/PlagMShttp.csproj"
+
+RUN dotnet build "PlagMShttp/PlagMShttp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PlagMShttp.csproj" -c Release -o /app/publish
+RUN dotnet publish "PlagMShttp/PlagMShttp.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,8 +38,32 @@ namespace API.Controllers
 
         // POST: api/File
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] string filetext)
         {
+            var textbytes = Encoding.ASCII.GetBytes(filetext);
+            var request = WebRequest.Create($"https://file_service/api/files");
+            request.Credentials = CredentialCache.DefaultCredentials;
+            request.Method = "POST";
+            request.ContentLength = textbytes.Length;
+
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(textbytes, 0, textbytes.Length);
+            requestStream.Close();
+
+            var response = request.GetResponse();
+            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+            string responseFromServer = null;
+            using (var responseStream = response.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream);
+                responseFromServer = reader.ReadToEnd();
+                Console.WriteLine(responseFromServer);
+            }
+
+            response.Close();
+
+            return Ok(responseFromServer);
         }
     }
 }

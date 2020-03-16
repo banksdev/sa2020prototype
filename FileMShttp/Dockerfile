@@ -7,14 +7,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY . FileMShttp/
-RUN dotnet restore "FileMShttp/FileMShttp.csproj"
 COPY . .
-WORKDIR "/src/FileMShttp"
-RUN dotnet build "FileMShttp.csproj" -c Release -o /app/build
+RUN ls -la FileMShttp 
+RUN dotnet restore "FileMShttp/FileMShttp.csproj"
+
+RUN dotnet build "FileMShttp/FileMShttp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FileMShttp.csproj" -c Release -o /app/publish
+RUN dotnet publish "FileMShttp/FileMShttp.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
