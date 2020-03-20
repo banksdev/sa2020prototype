@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+    api:
+        image: sa2020prototype/httpapi
+        ports:
+            - "80:80"
+        networks:
+            - sa2020http
+
+    file_service:
+        image: sa2020prototype/httpfileservice
+        # ports:
+        #     - "80:80"
+        networks:
+            - sa2020http
+    
+    plag_service:
+        image: sa2020prototype/httpplagservice
+        # ports:
+        #     - "80:80"
+        networks:
+            - sa2020http
+
+networks:
+    sa2020http:
