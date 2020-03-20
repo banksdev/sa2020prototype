@@ -34,6 +34,7 @@ namespace API.Controllers
 
             response.Close();
             return Ok(responseFromServer);
+            
         }
 
         // POST: api/File

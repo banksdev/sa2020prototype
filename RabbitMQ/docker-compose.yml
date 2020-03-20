@@ -15,10 +15,10 @@ services:
         ports: 
             - "5672:5672"
             - "15672:15672"
+        tty: true
         networks:
             sa2020http:
                 ipv4_address: 172.100.18.2
-
 
     file_service:
         image: sa2020prototype/rabbitmqfileservice
@@ -28,6 +28,7 @@ services:
             - "rabbitmqserver"
         restart:
             always
+        tty: true
         networks:
             sa2020http:
                 ipv4_address: 172.100.18.3
@@ -41,6 +42,7 @@ services:
             - "file_service"
         restart:
             always
+        tty: true
         networks:
             sa2020http:
                 ipv4_address: 172.100.18.4
