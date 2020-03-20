@@ -2,21 +2,21 @@ version: '3.3'
 
 services:
     api:
-        image: sa2020prototype/httpapi
+        image: sa2020prototype/httpapi:latest
         ports:
             - "80:80"
         networks:
             - sa2020http
 
     file_service:
-        image: sa2020prototype/httpfileservice
+        image: sa2020prototype/httpfileservice:latest
         # ports:
         #     - "80:80"
         networks:
             - sa2020http
     
     plag_service:
-        image: sa2020prototype/httpplagservice
+        image: sa2020prototype/httpplagservice:latest
         # ports:
         #     - "80:80"
         networks:
