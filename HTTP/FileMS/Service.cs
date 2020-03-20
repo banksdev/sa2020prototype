@@ -7,13 +7,13 @@ namespace FileMS
     {
         public string GetFile(Guid id)
         {
-            Thread.Sleep(200);
+            Thread.Sleep(new Random().Next(200, 1000));
             return "Hello JSON";
         }
 
         public Guid CreateFile(string json)
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(new Random().Next(200, 1000));
             return Guid.NewGuid();
         }
     }
