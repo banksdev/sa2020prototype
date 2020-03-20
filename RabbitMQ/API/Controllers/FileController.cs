@@ -21,6 +21,7 @@ namespace API.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
+            // SEND
             var queueName = "task_queue";
             var messageId = Guid.NewGuid();
             var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
@@ -40,6 +41,7 @@ namespace API.Controllers
 
             }
 
+            // RECEIVE
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -55,7 +57,6 @@ namespace API.Controllers
 
                 return Ok(response);
             }
-        
 
         }
 
@@ -130,12 +131,12 @@ namespace API.Controllers
                     {
                         // we found our message, return to caller
                         run = false;
-                        
+                        channel.BasicAck(deliveryTag: result.DeliveryTag, multiple: false);
                         // extract message
                         return message.Split(";")[1];
                     }
 
-                    channel.BasicAck(deliveryTag: result.DeliveryTag, multiple: false);
+                    
                 }
 
                 result = channel.BasicGet(queueName, noAck);
@@ -148,7 +149,6 @@ namespace API.Controllers
 
         public void SendMessage(IModel channel, string queueName, string message)
         {
-            // var message = GetMessage(args);
             var body = Encoding.UTF8.GetBytes(message);
 
             var properties = channel.CreateBasicProperties();
@@ -167,7 +167,6 @@ namespace API.Controllers
             channels[0] = CreateQueue(queueName);
             channels[1] = CreateQueue(queueName + "responses");
             return (channels[0], channels[1]);
-
         }
 
         public IModel CreateQueue(string queueName)
@@ -183,7 +182,6 @@ namespace API.Controllers
                                  arguments: null);
 
                 return channel;
-
             }
         }
 
