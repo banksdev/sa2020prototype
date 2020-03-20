@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
     api:
-        image: sa2020prototype/httpapi
+        image: sa2020prototype/rabbitapi
         ports:
             - "80:80"
         networks:
@@ -33,19 +33,19 @@ services:
             sa2020http:
                 ipv4_address: 172.100.18.3
     
-    simulator:
-        image: sa2020prototype/rabbitmqsimulator
-        # ports:
-        #     - "5673:5672"
-        depends_on:
-            - "rabbitmqserver"
-            - "file_service"
-        restart:
-            always
-        tty: true
-        networks:
-            sa2020http:
-                ipv4_address: 172.100.18.4
+    # simulator:
+    #     image: sa2020prototype/rabbitmqsimulator
+    #     # ports:
+    #     #     - "5673:5672"
+    #     depends_on:
+    #         - "rabbitmqserver"
+    #         - "file_service"
+    #     restart:
+    #         always
+    #     tty: true
+    #     networks:
+    #         sa2020http:
+    #             ipv4_address: 172.100.18.4
     
     # plag_service:
     #     image: sa2020prototype/httpplagservice

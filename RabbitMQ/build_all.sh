@@ -1,2 +1,2 @@
 ./build_filemsreceive.sh
-./build_simulator.sh
+./build_api.sh
