@@ -19,7 +19,7 @@ namespace API.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
-            var request = WebRequest.Create($"https://file_service/api/files/{id}");
+            var request = WebRequest.Create($"http://file_service/api/files/{id}");
             request.Credentials = CredentialCache.DefaultCredentials;
             var response = request.GetResponse();
             Console.WriteLine(((HttpWebResponse)response).StatusDescription);

@@ -20,7 +20,7 @@ namespace API.Controllers
         public IActionResult Post([FromBody] string filetext)
         {
             var textbytes = Encoding.ASCII.GetBytes(filetext);
-            var request = WebRequest.Create($"https://plag_service/api/files");
+            var request = WebRequest.Create($"http://plag_service/api/files");
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
             request.ContentLength = textbytes.Length;
