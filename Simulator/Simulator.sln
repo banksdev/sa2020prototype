@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{9E84B839-2050-47EC-BAFA-889F8F3C895E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|x64.Build.0 = Release|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E84B839-2050-47EC-BAFA-889F8F3C895E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A18E852-9BF5-4BAC-A8D6-769411E2F5E0}
+	EndGlobalSection
+EndGlobal
