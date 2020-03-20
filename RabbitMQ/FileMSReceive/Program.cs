@@ -11,7 +11,9 @@ namespace FileMSReceive
         static void Main(string[] args)
         {
             // WAIT A MINUT! (for rabbitmq server)
-            Thread.Sleep(60*1000);
+            Console.WriteLine("Waiting 20 secs for RabbitMQ");
+            Thread.Sleep(20*1000);
+            Console.WriteLine("Done waiting");
 
             var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
             using(var connection = factory.CreateConnection())

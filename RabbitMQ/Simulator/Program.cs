@@ -11,7 +11,9 @@ namespace Simulator
         static void Main(string[] args)
         {
             // WAIT A MINUT! (for rabbitmq server)
-            Thread.Sleep(60*1000);
+            Console.WriteLine("Waiting 20 secs for RabbitMQ");
+            Thread.Sleep(20*1000);
+            Console.WriteLine("Done waiting");
             
             var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
             using(var connection = factory.CreateConnection())
@@ -23,7 +25,8 @@ namespace Simulator
                                  autoDelete: false,
                                  arguments: null);
 
-                var msgList = new List<String>(){
+                var msgList = new List<String>()
+                {
                     "First message.",
                     "Second message..",
                     "Third message...",
@@ -31,7 +34,8 @@ namespace Simulator
                     "Fifth message....."
                 };
 
-                foreach(var msg in msgList){
+                foreach(var msg in msgList)
+                {
                     // var message = GetMessage(args);
                     var message = msg;
                     var body = Encoding.UTF8.GetBytes(message);

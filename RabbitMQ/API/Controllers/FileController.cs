@@ -14,7 +14,6 @@ namespace API.Controllers
     [ApiController]
     public class FileController : IFileController
     {
-
         // GET: api/File/5
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
@@ -29,7 +28,12 @@ namespace API.Controllers
             {
                 StreamReader reader = new StreamReader(data);
                 responseFromServer = reader.ReadToEnd();
+
                 Console.WriteLine(responseFromServer);
+
+                
+
+                
             }
 
             response.Close();
