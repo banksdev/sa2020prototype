@@ -11,7 +11,6 @@ services:
 
     rabbitmqserver:
         image: rabbitmq:3-management
-        # container_name: "rabbitmq"
         ports: 
             - "5672:5672"
             - "15672:15672"
@@ -22,8 +21,6 @@ services:
 
     file_service:
         image: sa2020prototype/rabbitmqfileservice
-        # ports:
-        #     - "5672:5672"
         depends_on:
             - "rabbitmqserver"
         restart:
@@ -32,6 +29,17 @@ services:
         networks:
             sa2020http:
                 ipv4_address: 172.100.18.3
+    
+    plag_service:
+        image: sa2020prototype/rabbitmqplagservice
+        depends_on:
+            - "rabbitmqserver"
+        restart:
+            always
+        tty: true
+        networks:
+            sa2020http:
+                ipv4_address: 172.100.18.4
     
     # simulator:
     #     image: sa2020prototype/rabbitmqsimulator
@@ -46,13 +54,6 @@ services:
     #     networks:
     #         sa2020http:
     #             ipv4_address: 172.100.18.4
-    
-    # plag_service:
-    #     image: sa2020prototype/httpplagservice
-    #     # ports:
-    #     #     - "80:80"
-    #     networks:
-    #         - sa2020http
 
 networks:
     sa2020http:

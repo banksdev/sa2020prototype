@@ -3,14 +3,14 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading;
-using FileMS;
+using PlagMS;
 
-namespace FileMSReceive
+namespace PlagMSReceive
 {
     class Program
     {
-        private static string receive_channel_name = "file_queue";
-        private static string send_channel_name = "file_queue_responses";
+        private static string receive_channel_name = "plag_queue";
+        private static string send_channel_name = "plag_queue_responses";
 
         static void Main(string[] args)
         {
@@ -43,18 +43,11 @@ namespace FileMSReceive
 
                     // extract id from message
 
-                    var res = "";
                     var ms = new Service();
                     // propagate either GET or POST to MS
                     var messagePieces = message.Split(";");
-                    if(messagePieces[1] == "GET")
-                    {
-                        res = ms.GetFile(Guid.Parse(messagePieces[2]));
-                    } 
-                    else 
-                    {
-                        res = ms.CreateFile(message).ToString();
-                    }
+
+                    var res = ms.IsPlag(messagePieces[1]);
 
                     // send answer out on "queueName" + "_responses"
                     var msg = messagePieces[0] + ";" + res;
@@ -73,7 +66,6 @@ namespace FileMSReceive
                     //       ((EventingBasicConsumer)sender).Model here
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
-
 
                 channel.BasicConsume(queue: receive_channel_name,
                                     autoAck: false,
