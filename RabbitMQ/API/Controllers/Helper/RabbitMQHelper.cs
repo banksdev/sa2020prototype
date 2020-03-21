@@ -20,7 +20,7 @@ public static class RabbitMQHelper
         BasicGetResult result = channel.BasicGet(queueName, noAck);
         while(run) 
         {
-            Thread.Sleep(100);
+            // Thread.Sleep(50);
 
             if (result == null) {
                 
@@ -32,15 +32,15 @@ public static class RabbitMQHelper
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine(" [x] Received {0}", message);
 
-                if(message.Contains(Id))
+                var msgPieces = message.Split(";");
+                if(msgPieces[0] == Id)
                 {
                     // we found our message, return to caller
                     run = false;
                     channel.BasicAck(deliveryTag: result.DeliveryTag, multiple: false);
                     // extract message
-                    return message.Split(";")[1];
+                    return msgPieces[1];
                 }
-
                 
             }
 
@@ -64,30 +64,6 @@ public static class RabbitMQHelper
                             basicProperties: properties,
                             body: body);
         Console.WriteLine(" [x] Sent {0}", message);
-    }
-
-    public static (IModel, IModel) ConnectToQueue(string queueName)
-    {
-        var channels = new IModel[2];
-        channels[0] = CreateQueue(queueName);
-        channels[1] = CreateQueue(queueName + "responses");
-        return (channels[0], channels[1]);
-    }
-
-    public static IModel CreateQueue(string queueName)
-    {
-        var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
-        using(var connection = factory.CreateConnection())
-        using(var channel = connection.CreateModel())
-        {
-            channel.QueueDeclare(queue: queueName,
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-            return channel;
-        }
     }
 
 }

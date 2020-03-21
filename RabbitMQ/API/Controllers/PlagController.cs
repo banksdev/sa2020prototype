@@ -13,7 +13,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlagController : ControllerBase
+    public class PlagController : ControllerBase, IPlagController
     {
         private string queueName = "plag_queue";
         private string responseQueueName = "plag_queue_responses";
@@ -25,7 +25,7 @@ namespace API.Controllers
             var textbytes = Encoding.ASCII.GetBytes(filetext);
             var messageId = Guid.NewGuid();
 
-            var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -34,8 +34,6 @@ namespace API.Controllers
                                 exclusive: false,
                                 autoDelete: false,
                                 arguments: null);
-
-                
 
                 var messageWithId = messageId + ";" + "GET" + ";" + textbytes;
                 RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
@@ -58,7 +56,7 @@ namespace API.Controllers
                 var response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
 
                 return Ok(response);
-        }
+            }
 
         }
     }

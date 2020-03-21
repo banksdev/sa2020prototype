@@ -19,7 +19,7 @@ namespace PlagMSReceive
             Thread.Sleep(15*1000);
             Console.WriteLine("Done waiting");
 
-            var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -40,8 +40,6 @@ namespace PlagMSReceive
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine(" [x] Received {0}", message);
-
-                    // extract id from message
 
                     var ms = new Service();
                     // propagate either GET or POST to MS

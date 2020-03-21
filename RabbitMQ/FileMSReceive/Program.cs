@@ -19,7 +19,7 @@ namespace FileMSReceive
             Thread.Sleep(15*1000);
             Console.WriteLine("Done waiting");
 
-            var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -40,8 +40,6 @@ namespace FileMSReceive
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine(" [x] Received {0}", message);
-
-                    // extract id from message
 
                     var res = "";
                     var ms = new Service();
@@ -73,7 +71,6 @@ namespace FileMSReceive
                     //       ((EventingBasicConsumer)sender).Model here
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
-
 
                 channel.BasicConsume(queue: receive_channel_name,
                                     autoAck: false,

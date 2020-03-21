@@ -26,7 +26,7 @@ namespace API.Controllers
         {
             // SEND
             var messageId = Guid.NewGuid();
-            var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -36,17 +36,11 @@ namespace API.Controllers
                                 autoDelete: false,
                                 arguments: null);
 
-
                 // SEND 
                 var messageWithId = messageId + ";" + "GET" + ";" + id;
                 RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
 
-            }
-
-            // RECEIVE
-            using(var connection = factory.CreateConnection())
-            using(var channel = connection.CreateModel())
-            {
+                // RECEIVE
                 channel.QueueDeclare(queue: responseQueueName,
                                 durable: true,
                                 exclusive: false,
@@ -54,9 +48,10 @@ namespace API.Controllers
                                 arguments: null);
 
                 // RECEIVE
-                var response = RabbitMQHelper.GetMessageToId(channel, "task_queue_responses", messageId.ToString());
+                var response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
 
                 return Ok(response);
+
             }
 
         }
@@ -69,7 +64,7 @@ namespace API.Controllers
             var textbytes = Encoding.ASCII.GetBytes(filetext.Content);
             var messageId = Guid.NewGuid();
 
-            var factory = new ConnectionFactory() { HostName = "172.100.18.2" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
@@ -78,8 +73,6 @@ namespace API.Controllers
                                 exclusive: false,
                                 autoDelete: false,
                                 arguments: null);
-
-                
 
                 var messageWithId = messageId + ";" + "GET" + ";" + textbytes;
                 RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
@@ -108,10 +101,10 @@ namespace API.Controllers
 
         }
 
-
         public class ContentWrapper
         {
             public string Content { get; set; }
         }
+        
     }
 }
