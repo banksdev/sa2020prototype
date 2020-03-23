@@ -25,46 +25,55 @@ namespace API.Controllers
         public IActionResult Get(Guid id)
         {
             // SEND
-            var messageId = Guid.NewGuid();
-            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
-            using(connection)
-            using(channel)
-            {
-                var messageWithId = messageId + ";" + "GET" + ";" + id;
+            // var messageId = Guid.NewGuid();
+            // var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
+            // var connection = factory.CreateConnection();
+            // var channel = connection.CreateModel();
+            // using(connection)
+            // using(channel)
+            // {
+            //     var messageWithId = messageId + ";" + "GET" + ";" + id;
                 
-                // SEND 
-                channel.QueueDeclare(queue: queueName,
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
+            //     // SEND 
+            //     channel.QueueDeclare(queue: queueName,
+            //                     durable: true,
+            //                     exclusive: false,
+            //                     autoDelete: false,
+            //                     arguments: null);
 
-                // RECEIVE
-                channel.QueueDeclare(queue: responseQueueName,
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
+            //     // RECEIVE
+            //     channel.QueueDeclare(queue: responseQueueName,
+            //                     durable: true,
+            //                     exclusive: false,
+            //                     autoDelete: false,
+            //                     arguments: null);
 
-                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            //     channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
                 
-                int maxAttempts = 3;
-                int attempts = 0;
-                string response = null;
-                while(attempts < maxAttempts)
-                {
-                    RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
+            //     int maxAttempts = 3;
+            //     int attempts = 0;
+            //     string response = null;
+            //     while(attempts < maxAttempts)
+            //     {
+            //         RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
 
-                    // RECEIVE
-                    response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
-                    if(response != null){
-                        break;
-                    } else {
-                        attempts++;
-                    }
-                }
+            //         // RECEIVE
+            //         response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
+            //         if(response != null){
+            //             break;
+            //         } else {
+            //             attempts++;
+            //         }
+
+            //     }
+
+                var rpcClient = new RpcClient();
+
+                Console.WriteLine($" [x] Requesting file {id}");
+                var response = rpcClient.Call(id.ToString());
+                Console.WriteLine(" [.] Got '{0}'", response);
+
+                rpcClient.Close();
 
                 // var consumer = new EventingBasicConsumer(channel);
                 // consumer.Received += (sender, ea) =>
@@ -83,13 +92,19 @@ namespace API.Controllers
                 //     }
                 // };
 
-                Console.WriteLine(response);
+            //     Console.WriteLine(response);
 
-                channel.Close();
-                connection.Close();
-                return Ok(response);
+            //     channel.Close();
+            //     connection.Close();
+            //     if(response = null){
+            //         return BadRequest();
+            //     }
 
-            }
+            //     return Ok(response);
+
+            // }
+
+            return Ok(response);
 
         }
 
