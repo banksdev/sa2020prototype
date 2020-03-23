@@ -1,50 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Simulator
 {
     class Program
     {
+        public static List<PrototypeResponse> _responses;
+        public static Guid empty = Guid.Empty;
+        //public static string URI = $"http://localhost/api/file/{empty}";
+        public static string URI = $"https://www.google.com/";
+        public static int MAX = 10;
 
-
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            var client = new HttpClient {Timeout = TimeSpan.FromSeconds(1)};
-            var empty = Guid.Empty;
-            var uri = $"http://localhost/api/file/{empty}";
+            _responses = new List<PrototypeResponse>();
             var dic = new Dictionary<bool, int> {{true, 0}, {false, 0}};
-            var i = 10_000;
-            //var i = 10;
-            while (i --> 0)
+            var threads = new List<Thread>();
+            for (var i = 0; i < 4; i++)
             {
-                try
+                var t = new Thread(() =>
                 {
-                    var res = await SoCallMeMaybe(client, uri);
-                    var prevVal = dic.GetValueOrDefault(res);
-                    dic.Remove(res);
-                    dic.Add(res, prevVal + 1);
-                }
-                catch (Exception e)
-                {
-                    var prevVal = dic.GetValueOrDefault(false);
-                    dic.Remove(false);
-                    dic.Add(false, prevVal + 1);
-                }
+                    var j = MAX;
+                    while (j-- > 0)
+                    {
+                        try
+                        {
+                            var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+                            SoCallMeMaybe(client, URI);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.StackTrace);
+                        }
+                    }
+                });
+                threads.Add(t);
             }
-
-            var resTrue = dic.GetValueOrDefault(true);
-            var resFalse = dic.GetValueOrDefault(false);
-            Console.WriteLine("True " + resTrue);
-            Console.WriteLine("False " + resFalse);
+            
+            Console.WriteLine("Starting");
+            foreach (var thread in threads)
+            {
+                thread.Start();
+            }
+            
+            Console.WriteLine("Joining");
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
+            Console.WriteLine("Result " + _responses.Count);
         }
 
-        public static async Task<bool> SoCallMeMaybe(HttpClient client,string uri)
+        public static void SoCallMeMaybe(HttpClient client,string uri)
         {
-            var response = await client.GetAsync(new Uri(uri));
-            return response.IsSuccessStatusCode;
+            var prev= DateTime.UtcNow;
+            var response = client.GetAsync(new Uri(uri)).Result;
+            var now = DateTime.UtcNow;
+            var timeResponse = now - prev;
+            var resp = new PrototypeResponse()
+            {
+                ResponseCode = response.StatusCode,
+                TimeSpan = timeResponse
+            };
+            _responses.Add(resp);
         }
+
+      
     }
 }
