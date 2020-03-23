@@ -4,75 +4,107 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FileController : IFileController
+    public class FileController : ControllerBase, IFileController
     {
-        // GET: api/File/5
+
+        private string queueName = "file_queue";
+        private string responseQueueName = "file_queue_responses";
+
+        // GET: api/File/75fc74cd-236e-46be-b01f-f3b149af5473
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
-            var request = WebRequest.Create($"https://file_service/api/files/{id}");
-            request.Credentials = CredentialCache.DefaultCredentials;
-            var response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-            string responseFromServer = null;
-            using (Stream data = response.GetResponseStream())
+            // SEND
+            var messageId = Guid.NewGuid();
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
             {
-                StreamReader reader = new StreamReader(data);
-                responseFromServer = reader.ReadToEnd();
+                channel.QueueDeclare(queue: queueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
-                Console.WriteLine(responseFromServer);
+                // SEND 
+                var messageWithId = messageId + ";" + "GET" + ";" + id;
+                RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
 
-                
+                // RECEIVE
+                channel.QueueDeclare(queue: responseQueueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
-                
+                // RECEIVE
+                var response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
+
+                return Ok(response);
+
             }
 
-            response.Close();
-            return Ok(responseFromServer);
         }
 
         // POST: api/File
         [HttpPost]
         public IActionResult Post([FromBody] ContentWrapper filetext)
         {
+            var queueName = "task_queue";
             var textbytes = Encoding.ASCII.GetBytes(filetext.Content);
-            var request = WebRequest.Create($"https://file_service/api/files");
-            request.Credentials = CredentialCache.DefaultCredentials;
-            request.Method = "POST";
-            request.ContentLength = textbytes.Length;
+            var messageId = Guid.NewGuid();
 
-            Stream requestStream = request.GetRequestStream();
-            requestStream.Write(textbytes, 0, textbytes.Length);
-            requestStream.Close();
-
-            var response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-            string responseFromServer = null;
-            using (var responseStream = response.GetResponseStream())
+            var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
             {
-                StreamReader reader = new StreamReader(responseStream);
-                responseFromServer = reader.ReadToEnd();
-                Console.WriteLine(responseFromServer);
+                channel.QueueDeclare(queue: queueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+                var messageWithId = messageId + ";" + "GET" + ";" + textbytes;
+                RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
+
             }
 
-            response.Close();
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
+            {
+                var responseQueueName = "task_queue_responses";
+                channel.QueueDeclare(queue: responseQueueName,
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
-            return Ok(responseFromServer);
+                var messageWithId = messageId + ";" + "GET" + ";" + textbytes;
+                RabbitMQHelper.SendMessage(channel, responseQueueName, messageWithId);
+
+                // RECEIVE
+                var response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
+
+                return Ok(response);
+
+            }
+
         }
 
         public class ContentWrapper
         {
             public string Content { get; set; }
         }
+        
     }
 }

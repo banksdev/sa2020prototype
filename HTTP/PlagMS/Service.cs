@@ -7,7 +7,7 @@ namespace PlagMS
     {
         public bool IsPlag(string text)
         {
-            Thread.Sleep(1500);
+            Thread.Sleep(new Random().Next(200, 1000));
             return false;
         }
     }

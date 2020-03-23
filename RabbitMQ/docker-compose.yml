@@ -2,64 +2,41 @@ version: '3.3'
 
 services:
     api:
-        image: sa2020prototype/httpapi
+        image: sa2020prototype/rabbitapi
         ports:
             - "80:80"
         networks:
-            sa2020http:
-                ipv4_address: 172.100.18.10
+            ingress:
 
     rabbitmqserver:
         image: rabbitmq:3-management
-        # container_name: "rabbitmq"
         ports: 
             - "5672:5672"
             - "15672:15672"
         tty: true
         networks:
-            sa2020http:
-                ipv4_address: 172.100.18.2
+            ingress:
 
     file_service:
         image: sa2020prototype/rabbitmqfileservice
-        # ports:
-        #     - "5672:5672"
         depends_on:
             - "rabbitmqserver"
         restart:
             always
         tty: true
         networks:
-            sa2020http:
-                ipv4_address: 172.100.18.3
+            ingress:
     
-    simulator:
-        image: sa2020prototype/rabbitmqsimulator
-        # ports:
-        #     - "5673:5672"
+    plag_service:
+        image: sa2020prototype/rabbitmqplagservice
         depends_on:
             - "rabbitmqserver"
-            - "file_service"
         restart:
             always
         tty: true
         networks:
-            sa2020http:
-                ipv4_address: 172.100.18.4
-    
-    # plag_service:
-    #     image: sa2020prototype/httpplagservice
-    #     # ports:
-    #     #     - "80:80"
-    #     networks:
-    #         - sa2020http
+            ingress:
+
 
 networks:
-    sa2020http:
-        driver: bridge
-        driver_opts:
-            com.docker.network.enable_ipv6: "false"
-        ipam:
-            driver: default
-            config:
-            - subnet: 172.100.18.0/24
+    ingress:
