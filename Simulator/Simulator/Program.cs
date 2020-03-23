@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,6 +54,7 @@ namespace Simulator
                 thread.Join();
             }
             Console.WriteLine("Result " + _responses.Count);
+            Console.WriteLine($"AVG TIME {GetMeanTime()}");
         }
 
         public static void SoCallMeMaybe(HttpClient client,string uri)
@@ -67,6 +69,19 @@ namespace Simulator
                 TimeSpan = timeResponse
             };
             _responses.Add(resp);
+        }
+
+        public static string GetMeanTime()
+        {
+            var r = _responses.Select(x => x.TimeSpan);
+            TimeSpan totalSpan = new TimeSpan();
+            foreach (var timeSpan in r)
+            {
+                totalSpan += timeSpan;
+            }
+
+            var res = totalSpan / _responses.Count;
+            return res.ToString();
         }
 
       
