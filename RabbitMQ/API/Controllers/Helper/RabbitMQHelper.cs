@@ -7,12 +7,15 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 public static class RabbitMQHelper
 {
 
     public static string GetMessageToId(IModel channel, string queueName, string Id) 
     {
+        var watch = new Stopwatch();
+        watch.Start();
         Console.WriteLine(String.Format(" [*] Waiting for messages on channel{0}.", channel));
         
         bool noAck = false;
@@ -20,13 +23,19 @@ public static class RabbitMQHelper
         BasicGetResult result = channel.BasicGet(queueName, noAck);
         while(run) 
         {
-            // Thread.Sleep(50);
+            if (watch.ElapsedMilliseconds > 1000) run = false;
+
+            // Console.WriteLine("Elapsed time: " + watch.ElapsedMilliseconds);
 
             if (result == null) {
-                
+                Thread.Sleep(100);
                 // No message available at this time.
                 // dont ack, meant for other api
+
             } else {
+                // var response = channel.QueueDeclarePassive(queueName);
+                // Console.WriteLine("Currently In Queue: " + response.MessageCount);
+
                 IBasicProperties props = result.BasicProperties;
                 byte[] body = result.Body;
                 var message = Encoding.UTF8.GetString(body);

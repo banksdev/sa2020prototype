@@ -13,7 +13,7 @@ namespace Simulator
         public static Guid empty = Guid.Empty;
         //public static string URI = $"http://localhost/api/file/{empty}";
         public static string URI = $"https://www.google.com/";
-        public static int MAX = 10;
+        public static int MAX = 100;
 
         static void Main(string[] args)
         {

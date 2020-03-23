@@ -23,7 +23,6 @@ namespace FileMSReceive
             using(var connection = factory.CreateConnection())
             using(var channel = connection.CreateModel())
             {
-
                 channel.QueueDeclare(queue: receive_channel_name,
                                     durable: true,
                                     exclusive: false,
@@ -34,9 +33,12 @@ namespace FileMSReceive
 
                 Console.WriteLine(" [*] Waiting for messages.");
 
+                var response = channel.QueueDeclarePassive(receive_channel_name);
+
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (sender, ea) =>
                 {
+                    Console.WriteLine("Currently In Queue: " + response.MessageCount);
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     Console.WriteLine(" [x] Received {0}", message);
@@ -70,6 +72,7 @@ namespace FileMSReceive
                     // Note: it is possible to access the channel via
                     //       ((EventingBasicConsumer)sender).Model here
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                    
                 };
 
                 channel.BasicConsume(queue: receive_channel_name,
