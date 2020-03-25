@@ -2,50 +2,73 @@
 Vagrant.configure("2") do |config|
     config.vm.box = 'digital_ocean'
     config.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-  
-    (1..3).each do |machine| 
-      config.vm.define "rabbitserver#{machine}", primary: true do |server|
+
+    (1..4).each do |machine| 
+      config.vm.define "protoserver#{machine}", primary: false do |server|
         server.vm.provider :digital_ocean do |provider,  override|
           override.ssh.private_key_path = '~/.ssh/proto_rsa'
           provider.ssh_key_name = 'proto_rsa'
           provider.token = '14a4be84e55b0844a722be7a68c1b1cc34fae2544dd8ba8b40c7d019ef36eafa'
           provider.image = 'docker-18-04'
           provider.region = 'fra1'
-          provider.size = '2gb'
+          provider.size = '1gb'
+          provider.private_networking = true
           provider.monitoring = true
         end
-  
-        server.vm.synced_folder ".", "/vagrant", type: "rsync"
-        server.vm.hostname = "rabbitserver"
+
+        server.vm.hostname = "protoserver#{machine}"
         server.vm.provision "shell", inline: <<-SHELL 
   
           # set timezone correctly
           unlink /etc/localtime
           ln -s /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
-          
-          # system update
-          apt-get update
-          apt-get upgrade -y
       
           echo -e "\nOpening ports ...\n"
           ufw allow 80 # http
           ufw allow 5672 # RabbitMQ
           ufw allow 15672 # RabbitMQ
           ufw allow 2377 # swarm
-      
-          # echo -e "\nStarting docker-compose ...\n"
-          # cd /vagrant
-          # docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')
-          # docker-compose down -v
-          # ./setup_swarm.sh
 
-          docker swarm join --token SWMTKN-1-0pnheptt1u4ezrftabsm8x7w8tx1issjzccmzsnvhyghg446zi-1i7k5eehciilgltu1a30en1il 91.100.23.100:2377
-          
           echo -e "\nVagrant setup done ..."
           echo -e "\nServer should be accessible at http://$(hostname -I | awk '{print $1}')"
 
         SHELL
       end
     end
+
+    (1..1).each do |machine| 
+      config.vm.define "leaderprotoserver#{machine}", primary: true do |leaderserver|
+      leaderserver.vm.provider :digital_ocean do |provider,  override|
+          override.ssh.private_key_path = '~/.ssh/proto_rsa'
+          provider.ssh_key_name = 'proto_rsa'
+          provider.token = '14a4be84e55b0844a722be7a68c1b1cc34fae2544dd8ba8b40c7d019ef36eafa'
+          provider.image = 'docker-18-04'
+          provider.region = 'fra1'
+          provider.size = '1gb'
+          provider.private_networking = true
+          provider.monitoring = true
+        end
+  
+        leaderserver.vm.synced_folder "./..", "/vagrant", type: "rsync"
+        leaderserver.vm.hostname = "leaderprotoserver"
+        leaderserver.vm.provision "shell", inline: <<-SHELL 
+  
+          # set timezone correctly
+          unlink /etc/localtime
+          ln -s /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
+      
+          echo -e "\nOpening ports ...\n"
+          ufw allow 80 # http
+          ufw allow 5672 # RabbitMQ
+          ufw allow 15672 # RabbitMQ
+          ufw allow 2377 # swarm
+    
+          echo -e "\nVagrant setup done ..."
+          echo -e "\nServer should be accessible at http://$(hostname -I | awk '{print $1}')"
+
+        SHELL
+      end
+    end
+
   end
   

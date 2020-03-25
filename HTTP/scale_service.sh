@@ -1,1 +1,1 @@
-docker service scale httpprototype_plag_service=10 httpprototype_file_service=10 httpprototype_api=10
+docker service scale httpprototype_api=8 httpprototype_plag_service=8 httpprototype_file_service=8

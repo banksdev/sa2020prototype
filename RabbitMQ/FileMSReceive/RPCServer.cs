@@ -14,8 +14,8 @@ class RPCServer
     public static void Main()
     {
         // WAIT A MINUT! (for rabbitmq server)
-        Console.WriteLine("Waiting 15 secs for RabbitMQ");
-        Thread.Sleep(15*1000);
+        Console.WriteLine("Waiting 20 secs for RabbitMQ");
+        Thread.Sleep(20*1000);
         Console.WriteLine("Done waiting");
 
         var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
@@ -45,7 +45,6 @@ class RPCServer
                     Console.WriteLine(" [.] recieved ({0})", message);
 
                     var fileService = new Service();
-                    // response = fib(n).ToString();
                     response = fileService.GetFile(Guid.Parse(message));
                 }
                 catch (Exception e)

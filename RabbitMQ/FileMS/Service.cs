@@ -8,7 +8,7 @@ namespace FileMS
         public string GetFile(Guid id)
         {
             Thread.Sleep(200);
-            return "Hello JSON";
+            return id.ToString();
         }
 
         public Guid CreateFile(string json)

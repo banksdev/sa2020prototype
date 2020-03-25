@@ -12,7 +12,6 @@ public class RpcClient
     private readonly EventingBasicConsumer consumer;
     private readonly BlockingCollection<string> respQueue = new BlockingCollection<string>();
     private readonly IBasicProperties props;
-
     private static string receive_channel_name = "file_queue_responses";
     private static string send_channel_name = "file_queue";
 
@@ -41,6 +40,7 @@ public class RpcClient
                 respQueue.Add(response);
             }
         };
+
     }
 
     public string Call(string message)
@@ -64,4 +64,5 @@ public class RpcClient
     {
         connection.Close();
     }
+    
 }

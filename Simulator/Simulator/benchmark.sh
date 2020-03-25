@@ -1,0 +1,2 @@
+./benchmarkmq.sh
+./benchmarkhttp.sh
