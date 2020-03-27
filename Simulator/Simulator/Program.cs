@@ -12,7 +12,7 @@ namespace Simulator
     class Program
     {
         public static ConcurrentBag<PrototypeResponse> _responses;
-        public static int MAX = 5_000;
+        public static int MAX = 1_000;
 
         static void Main(string[] args)
         {

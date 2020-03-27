@@ -1,3 +1,4 @@
 ./build_filemsreceive.sh
 ./build_api.sh
-./build_plagms.sh
+# ./build_simulator.sh
+# ./build_plagms.sh

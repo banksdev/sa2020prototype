@@ -29,15 +29,15 @@ services:
         networks:
             ingress:
     
-    plag_service:
-        image: sa2020prototype/rabbitmqplagservice
-        depends_on:
-            - "rabbitmqserver"
-        restart:
-            always
-        tty: true
-        networks:
-            ingress:
+    # plag_service:
+    #     image: sa2020prototype/rabbitmqplagservice
+    #     depends_on:
+    #         - "rabbitmqserver"
+    #     restart:
+    #         always
+    #     tty: true
+    #     networks:
+    #         ingress:
 
 
 networks:

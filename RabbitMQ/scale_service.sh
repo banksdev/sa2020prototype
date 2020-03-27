@@ -1,1 +1,1 @@
-docker service scale rabbitprototype_rabbitmqserver=1 rabbitprototype_api=8 rabbitprototype_file_service=8 rabbitprototype_plag_service=8
+docker service scale rabbitprototype_rabbitmqserver=1 rabbitprototype_api=8 rabbitprototype_file_service=8

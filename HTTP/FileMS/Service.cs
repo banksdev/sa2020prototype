@@ -7,7 +7,7 @@ namespace FileMS
     {
         public string GetFile(Guid id)
         {
-            Thread.Sleep(new Random().Next(200, 1000));
+            Thread.Sleep(200);
             return id.ToString();
         }
 

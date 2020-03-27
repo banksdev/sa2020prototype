@@ -15,12 +15,12 @@ services:
         networks:
             - sa2020http
     
-    plag_service:
-        image: sa2020prototype/httpplagservice:latest
-        # ports:
-        #     - "80:80"
-        networks:
-            - sa2020http
+    # plag_service:
+    #     image: sa2020prototype/httpplagservice:latest
+    #     # ports:
+    #     #     - "80:80"
+    #     networks:
+    #         - sa2020http
 
 networks:
     sa2020http:
