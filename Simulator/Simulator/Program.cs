@@ -12,7 +12,7 @@ namespace Simulator
     class Program
     {
         public static ConcurrentBag<PrototypeResponse> _responses;
-        public static int MAX = 10_000;
+        public static int MAX = 5_000;
 
         static void Main(string[] args)
         {
@@ -96,7 +96,6 @@ namespace Simulator
 
             var res = totalSpan / _responses.Count;
             return res.ToString();
-
         }
       
     }

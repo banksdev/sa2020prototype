@@ -15,6 +15,7 @@ namespace FileMShttp.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
+            Console.WriteLine($"Processing {id}");
             return Ok(new FileMS.Service().GetFile(id));
         }
 

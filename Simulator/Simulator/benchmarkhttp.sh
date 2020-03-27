@@ -7,15 +7,11 @@ cd ../../HTTP/
 echo "Starting simulation.."
 cd ../Simulator/Simulator
 dotnet run > logs/http/run1.log
-echo "(1/5)"
+echo "(1/3)"
 dotnet run > logs/http/run2.log
-echo "(2/5)"
+echo "(2/3)"
 dotnet run > logs/http/run3.log
-echo "(3/5)"
-dotnet run > logs/http/run4.log
-echo "(4/5)"
-dotnet run > logs/http/run5.log
-echo "(5/5)"
+echo "(3/3)"
 
 echo "Tearing down swarm..."
 cd ../../HTTP/

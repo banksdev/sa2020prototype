@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
           provider.monitoring = true
         end
 
+        server.vm.synced_folder "./..", "/vagrant", type: "rsync"
         server.vm.hostname = "protoserver#{machine}"
         server.vm.provision "shell", inline: <<-SHELL 
   
@@ -28,6 +29,8 @@ Vagrant.configure("2") do |config|
           ufw allow 5672 # RabbitMQ
           ufw allow 15672 # RabbitMQ
           ufw allow 2377 # swarm
+          ufw allow 4789 # swarm node communication
+          ufw allow 7946 # swarm overlay traffic
 
           echo -e "\nVagrant setup done ..."
           echo -e "\nServer should be accessible at http://$(hostname -I | awk '{print $1}')"
@@ -36,39 +39,53 @@ Vagrant.configure("2") do |config|
       end
     end
 
-    (1..1).each do |machine| 
-      config.vm.define "leaderprotoserver#{machine}", primary: true do |leaderserver|
-      leaderserver.vm.provider :digital_ocean do |provider,  override|
-          override.ssh.private_key_path = '~/.ssh/proto_rsa'
-          provider.ssh_key_name = 'proto_rsa'
-          provider.token = '14a4be84e55b0844a722be7a68c1b1cc34fae2544dd8ba8b40c7d019ef36eafa'
-          provider.image = 'docker-18-04'
-          provider.region = 'fra1'
-          provider.size = '1gb'
-          provider.private_networking = true
-          provider.monitoring = true
-        end
+    # (1..1).each do |machine| 
+    #   config.vm.define "simserver#{machine}", primary: false do |server|
+    #     server.vm.provider :digital_ocean do |provider,  override|
+    #       override.ssh.private_key_path = '~/.ssh/proto_rsa'
+    #       provider.ssh_key_name = 'proto_rsa'
+    #       provider.token = '14a4be84e55b0844a722be7a68c1b1cc34fae2544dd8ba8b40c7d019ef36eafa'
+    #       provider.image = 'docker-18-04'
+    #       provider.region = 'fra1'
+    #       provider.size = '1gb'
+    #       provider.private_networking = true
+    #       provider.monitoring = true
+    #     end
+
+    #     server.vm.synced_folder "./..", "/vagrant", type: "rsync"
+    #     server.vm.hostname = "simserver#{machine}"
+    #     server.vm.provision "shell", inline: <<-SHELL 
   
-        leaderserver.vm.synced_folder "./..", "/vagrant", type: "rsync"
-        leaderserver.vm.hostname = "leaderprotoserver"
-        leaderserver.vm.provision "shell", inline: <<-SHELL 
-  
-          # set timezone correctly
-          unlink /etc/localtime
-          ln -s /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
+    #       # set timezone correctly
+    #       unlink /etc/localtime
+    #       ln -s /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime
       
-          echo -e "\nOpening ports ...\n"
-          ufw allow 80 # http
-          ufw allow 5672 # RabbitMQ
-          ufw allow 15672 # RabbitMQ
-          ufw allow 2377 # swarm
-    
-          echo -e "\nVagrant setup done ..."
-          echo -e "\nServer should be accessible at http://$(hostname -I | awk '{print $1}')"
+    #       echo -e "\nOpening ports ...\n"
+    #       ufw allow 80 # http
+    #       ufw allow 5672 # RabbitMQ
+    #       ufw allow 15672 # RabbitMQ
+    #       ufw allow 2377 # swarm
+    #       ufw allow 4789 # swarm node communication
+    #       ufw allow 7946 # swarm overlay traffic
 
-        SHELL
-      end
-    end
+    #       cp /vagrant /home/
+
+    #       # mkdir install_dotnet
+    #       # cd install_dotnet
+    #       # wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    #       # dpkg -i packages-microsoft-prod.deb
+    #       # add-apt-repository universe
+    #       # apt-get update
+    #       # apt-get install apt-transport-https
+    #       # apt-get update
+    #       # apt-get install dotnet-sdk-3.1
+
+    #       echo -e "\nVagrant setup done ..."
+    #       echo -e "\nServer should be accessible at http://$(hostname -I | awk '{print $1}')"
+
+    #     SHELL
+    #   end
+    # end
 
   end
   

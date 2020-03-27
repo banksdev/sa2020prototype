@@ -10,9 +10,11 @@ services:
 
     rabbitmqserver:
         image: rabbitmq:3-management
-        ports: 
+        ports: # same as the docker image exposes
+            - "4369:4369"
             - "5672:5672"
             - "15672:15672"
+            - "25672:25672"
         tty: true
         networks:
             ingress:
