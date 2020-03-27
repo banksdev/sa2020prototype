@@ -1,0 +1,1 @@
+docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')
