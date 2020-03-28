@@ -1,7 +1,0 @@
-Starting benchmark at 3/27/2020 3:00:22 PM
-Starting 4 threads. Each will send 1000 requests
-Joining threads...
-Result 4000
-AVG TIME 00:00:00.2157248
-Total running time: 00:03:35.8767655
-Finished benchmark at 3/27/2020 3:03:58 PM

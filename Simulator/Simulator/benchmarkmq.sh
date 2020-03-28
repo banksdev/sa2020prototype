@@ -6,6 +6,7 @@ cd ../../RabbitMQ/
 
 echo "Starting simulation.."
 cd ../Simulator/Simulator
+mkdir -p logs/mq
 dotnet run > logs/mq/run1.log
 echo "(1/3)"
 dotnet run > logs/mq/run2.log

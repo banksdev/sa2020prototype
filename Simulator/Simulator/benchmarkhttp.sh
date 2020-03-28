@@ -6,6 +6,7 @@ cd ../../HTTP/
 
 echo "Starting simulation.."
 cd ../Simulator/Simulator
+mkdir -p logs/http
 dotnet run > logs/http/run1.log
 echo "(1/3)"
 dotnet run > logs/http/run2.log
