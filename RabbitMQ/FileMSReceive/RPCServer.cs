@@ -67,19 +67,5 @@ class RPCServer
         }
     }
 
-    /// 
-
-    /// Assumes only valid positive integer input.
-    /// Don't expect this one to work for big numbers, and it's
-    /// probably the slowest recursive implementation possible.
-    /// 
-    private static int fib(int n)
-    {
-        if (n == 0 || n == 1)
-        {
-            return n;
-        }
-
-        return fib(n - 1) + fib(n - 2);
-    }
 }
+

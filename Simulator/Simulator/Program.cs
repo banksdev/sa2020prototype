@@ -25,7 +25,6 @@ namespace Simulator
             {
                 var t = new Thread(() =>
                 {
-                    
                     var j = MAX;
                     var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
                     while (j-- > 0)

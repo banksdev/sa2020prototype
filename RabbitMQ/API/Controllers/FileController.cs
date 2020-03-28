@@ -24,85 +24,14 @@ namespace API.Controllers
         [HttpGet("{id}", Name = "Get")]
         public IActionResult Get(Guid id)
         {
-            // SEND
-            // var messageId = Guid.NewGuid();
-            // var factory = new ConnectionFactory() { HostName = "rabbitmqserver" };
-            // var connection = factory.CreateConnection();
-            // var channel = connection.CreateModel();
-            // using(connection)
-            // using(channel)
-            // {
-            //     var messageWithId = messageId + ";" + "GET" + ";" + id;
-                
-            //     // SEND 
-            //     channel.QueueDeclare(queue: queueName,
-            //                     durable: true,
-            //                     exclusive: false,
-            //                     autoDelete: false,
-            //                     arguments: null);
 
-            //     // RECEIVE
-            //     channel.QueueDeclare(queue: responseQueueName,
-            //                     durable: true,
-            //                     exclusive: false,
-            //                     autoDelete: false,
-            //                     arguments: null);
+            var rpcClient = new RpcClient();
 
-            //     channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-                
-            //     int maxAttempts = 3;
-            //     int attempts = 0;
-            //     string response = null;
-            //     while(attempts < maxAttempts)
-            //     {
-            //         RabbitMQHelper.SendMessage(channel, queueName, messageWithId);
+            Console.WriteLine($" [x] Requesting file {id}");
+            var response = rpcClient.Call(id.ToString());
+            Console.WriteLine(" [.] Got '{0}'", response);
 
-            //         // RECEIVE
-            //         response = RabbitMQHelper.GetMessageToId(channel, responseQueueName, messageId.ToString());
-            //         if(response != null){
-            //             break;
-            //         } else {
-            //             attempts++;
-            //         }
-
-            //     }
-
-                var rpcClient = new RpcClient();
-
-                Console.WriteLine($" [x] Requesting file {id}");
-                var response = rpcClient.Call(id.ToString());
-                Console.WriteLine(" [.] Got '{0}'", response);
-
-                rpcClient.Close();
-
-                // var consumer = new EventingBasicConsumer(channel);
-                // consumer.Received += (sender, ea) =>
-                // {
-                //     var body = ea.Body;
-                //     var message = Encoding.UTF8.GetString(body);
-                //     Console.WriteLine(" [x] Received {0}", message);
-
-                //     var msgPieces = message.Split(";");
-                //     if(msgPieces[0] == id.ToString())
-                //     {
-                //         // we found our message, return to caller
-                //         channel.BasicAck(deliveryTag: result.DeliveryTag, multiple: false);
-                //         // extract message
-                //         msgPieces[1];
-                //     }
-                // };
-
-            //     Console.WriteLine(response);
-
-            //     channel.Close();
-            //     connection.Close();
-            //     if(response = null){
-            //         return BadRequest();
-            //     }
-
-            //     return Ok(response);
-
-            // }
+            rpcClient.Close();
 
             return Ok(response);
 
